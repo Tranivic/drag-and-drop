@@ -8,6 +8,13 @@ interface Validatable {
   max?: number;
 }
 
+interface ProjectObj {
+  title: string;
+  description: string;
+  peoples: number;
+  active: boolean;
+}
+// Functions
 function validate(validatableInput: Validatable) {
   let isValid = true;
   if (validatableInput.required) {
@@ -42,7 +49,7 @@ function validate(validatableInput: Validatable) {
   return isValid;
 }
 
-// autobind decorator
+// Autobind decorator
 function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjDescriptor: PropertyDescriptor = {
@@ -135,9 +142,15 @@ class ProjectInput {
     event.preventDefault();
     const userInput = this.gatherUserInput();
     if (Array.isArray(userInput)) {
-      const [title, desc, people] = userInput;
-      console.log(title, desc, people);
+      const newProject: ProjectObj = {
+        title: userInput[0],
+        description: userInput[1],
+        peoples: userInput[2],
+        active: true,
+      };
+      globalState.pushNewProject(newProject);
       this.clearInputs();
+      globalState.renderProjectsOnDOM();
     }
   }
 
@@ -150,6 +163,7 @@ class ProjectInput {
   }
 }
 
+// Project list class
 class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -185,6 +199,52 @@ class ProjectList {
   }
 }
 
+// Global project state (data)
+class ProjectState {
+  activeProjects: ProjectObj[] = [];
+  finishedProjects: ProjectObj[] = [];
+  private static instance: ProjectState;
+
+  constructor() {}
+
+  static getInstance() {
+    if (this.instance) {
+      return this.instance;
+    }
+    this.instance = new ProjectState();
+    return this.instance;
+  }
+
+  public pushNewProject(project: ProjectObj) {
+    if (project.active) {
+      this.activeProjects.push(project);
+      console.log(this.activeProjects);
+    } else {
+      this.finishedProjects.push(project);
+      console.log(this.finishedProjects);
+    }
+  }
+
+  public renderProjectsOnDOM() {
+    const finishedListElement = finishedList.element;
+    const activeListElement = activeList.element;
+    
+    activeListElement.innerHTML = '';
+    finishedListElement.innerHTML = '';
+  
+    this.activeProjects.forEach((element) => {
+      activeListElement.insertAdjacentHTML('beforeend', `<li id="${element.title}">${element.title}</li>`);
+    });
+  
+    this.finishedProjects.forEach((element) => {
+      finishedListElement.insertAdjacentHTML('beforeend', `<li id="${element.title}">${element.title}</li>`);
+    });
+  }
+}
+
+const globalState = ProjectState.getInstance();
+
+// Configurations
 const prjInput = new ProjectInput();
 const activeList = new ProjectList('active');
 const finishedList = new ProjectList('finished');
