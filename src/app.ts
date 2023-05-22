@@ -228,17 +228,36 @@ class ProjectState {
   public renderProjectsOnDOM() {
     const finishedListElement = finishedList.element;
     const activeListElement = activeList.element;
-    
-    activeListElement.innerHTML = '';
-    finishedListElement.innerHTML = '';
-  
-    this.activeProjects.forEach((element) => {
-      activeListElement.insertAdjacentHTML('beforeend', `<li id="${element.title}">${element.title}</li>`);
-    });
-  
-    this.finishedProjects.forEach((element) => {
-      finishedListElement.insertAdjacentHTML('beforeend', `<li id="${element.title}">${element.title}</li>`);
-    });
+
+    if (this.activeProjects.length > 0) {
+      this.activeProjects.forEach((element) => {
+        let liElement = document.createElement('li');
+        liElement.classList.add('list-item');
+        liElement.innerHTML = `
+          <h2>${element.title}</h2>
+          <h3>${element.peoples} ${
+          element.peoples > 1 ? 'people' : 'person'
+        } working in the project</h3>
+          <p>${element.description}</p>
+        `;
+        activeListElement.appendChild(liElement);
+      });
+    }
+
+    if (this.finishedProjects.length > 0) {
+      this.finishedProjects.forEach((element) => {
+        let liElement = document.createElement('li');
+        liElement.classList.add('list-item');
+        liElement.innerHTML = `
+          <h2>${element.title}</h2>
+          <h3>${element.peoples} ${
+          element.peoples > 1 ? 'people' : 'person'
+        } working in the project</h3>
+          <p>${element.description}</p>
+        `;
+        finishedListElement.appendChild(liElement);
+      });
+    }
   }
 }
 
