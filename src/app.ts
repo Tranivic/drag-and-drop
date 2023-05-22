@@ -1,4 +1,11 @@
+//  Enums
+
+enum projectStatus {
+  Active = 'active',
+  Finished = 'finished',
+}
 // Validation
+
 interface Validatable {
   value: string | number;
   required?: boolean;
@@ -7,6 +14,7 @@ interface Validatable {
   min?: number;
   max?: number;
 }
+//Interfaces
 
 interface ProjectObj {
   title: string;
@@ -15,6 +23,7 @@ interface ProjectObj {
   active: boolean;
 }
 // Functions
+
 function validate(validatableInput: Validatable) {
   let isValid = true;
   if (validatableInput.required) {
@@ -50,6 +59,7 @@ function validate(validatableInput: Validatable) {
 }
 
 // Autobind decorator
+
 function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjDescriptor: PropertyDescriptor = {
@@ -63,6 +73,7 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
 }
 
 // ProjectInput Class
+
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -164,6 +175,7 @@ class ProjectInput {
 }
 
 // Project list class
+
 class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -200,6 +212,7 @@ class ProjectList {
 }
 
 // Global project state (data)
+
 class ProjectState {
   activeProjects: ProjectObj[] = [];
   finishedProjects: ProjectObj[] = [];
@@ -265,5 +278,5 @@ const globalState = ProjectState.getInstance();
 
 // Configurations
 const prjInput = new ProjectInput();
-const activeList = new ProjectList('active');
-const finishedList = new ProjectList('finished');
+const activeList = new ProjectList(projectStatus.Active);
+const finishedList = new ProjectList(projectStatus.Finished);
